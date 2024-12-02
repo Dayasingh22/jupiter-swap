@@ -1,37 +1,37 @@
-'use client';
+"use client";
 
-import styles from './page.module.css';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey, VersionedTransaction, Connection } from '@solana/web3.js';
-import React, { useState, useEffect, useCallback } from 'react';
-import { getAssociatedTokenAddress } from '@solana/spl-token';
+import styles from "./page.module.css";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey, VersionedTransaction, Connection } from "@solana/web3.js";
+import React, { useState, useEffect, useCallback } from "react";
+import { getAssociatedTokenAddress } from "@solana/spl-token";
 
-const USDC_MINT = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
+const USDC_MINT = new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v");
 const assets = [
   {
-    name: 'SOL',
-    mint: 'So11111111111111111111111111111111111111112',
+    name: "SOL",
+    mint: "So11111111111111111111111111111111111111112",
     decimals: 9,
   },
   {
-    name: 'USDC',
-    mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    name: "USDC",
+    mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
     decimals: 6,
   },
   {
-    name: 'BONK',
-    mint: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
+    name: "BONK",
+    mint: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
     decimals: 5,
   },
   {
-    name: 'WIF',
-    mint: 'EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm',
+    name: "WIF",
+    mint: "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
     decimals: 6,
   },
 ];
 
 const MERCHANT_WALLET_PUBLIC_KEY = new PublicKey(
-  '6L8WkCdx5EyY8nAJ6FhadD9bRKV7YkrBJ7JUAVoTi1iF'
+  "6L8WkCdx5EyY8nAJ6FhadD9bRKV7YkrBJ7JUAVoTi1iF"
 );
 
 const debounce = <T extends unknown[]>(
@@ -62,7 +62,7 @@ export default function Swap() {
 
   // Need a custom RPC so we don't get rate-limited, don't rely on users' wallets
   const connection = new Connection(
-    'https://mainnet.helius-rpc.com/?api-key=YOUR_API_KEY_HERE'
+    "https://mainnet.helius-rpc.com/?api-key=28508ff4-171d-48ad-8271-f9805344b97e"
   );
 
   const handleFromAssetChange = async (
@@ -93,7 +93,7 @@ export default function Swap() {
 
   async function getQuote(currentAmount: number) {
     if (isNaN(currentAmount) || currentAmount <= 0) {
-      console.error('Invalid fromAmount value:', currentAmount);
+      console.error("Invalid fromAmount value:", currentAmount);
       return;
     }
 
@@ -119,7 +119,7 @@ export default function Swap() {
   async function signAndSendTransaction() {
     if (!wallet.connected || !wallet.signTransaction) {
       console.error(
-        'Wallet is not connected or does not support signing transactions'
+        "Wallet is not connected or does not support signing transactions"
       );
       return;
     }
@@ -130,10 +130,10 @@ export default function Swap() {
 
     // get serialized transactions for the swap
     const { swapTransaction } = await (
-      await fetch('https://quote-api.jup.ag/v6/swap', {
-        method: 'POST',
+      await fetch("https://quote-api.jup.ag/v6/swap", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           quoteResponse,
@@ -146,7 +146,7 @@ export default function Swap() {
     ).json();
 
     try {
-      const swapTransactionBuf = Buffer.from(swapTransaction, 'base64');
+      const swapTransactionBuf = Buffer.from(swapTransaction, "base64");
       const transaction = VersionedTransaction.deserialize(swapTransactionBuf);
       const signedTransaction = await wallet.signTransaction(transaction);
 
@@ -163,12 +163,12 @@ export default function Swap() {
           lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
           signature: txid,
         },
-        'confirmed'
+        "confirmed"
       );
 
       console.log(`https://solscan.io/tx/${txid}`);
     } catch (error) {
-      console.error('Error signing or sending the transaction:', error);
+      console.error("Error signing or sending the transaction:", error);
     }
   }
 
